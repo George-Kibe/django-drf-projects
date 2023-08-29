@@ -1,13 +1,22 @@
 from pathlib import Path
-
+import environ
+import os 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = 'django-insecure-yflb(pz1qi_ioh-ygy!zu67xx&z7beq2$3=4(7gftb7ch57f9z'
 
+# SECRET_KEY = 'django-insecure-yflb(pz1qi_ioh-ygy!zu67xx&z7beq2$3=4(7gftb7ch57f9z'
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False)
+)
+# Take environment variables from .env file
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+# DEBUG = True
+DEBUG = env('DEBUG')
+SECRET_KEY = env('SECRET_KEY')
+print("SECRET KEY: ", SECRET_KEY)
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -16,7 +25,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # External packages
+    "rest_framework"
+    
+    # Internal Apps
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
