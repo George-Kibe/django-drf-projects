@@ -1,4 +1,4 @@
-.PHONY: migrate run-server superuser spectacular coverage
+.PHONY: migrate run-server superuser spectacular coverage pytest
 
 migrate:
 	python3 project/manage.py makemigrations; python3 project/manage.py migrate
@@ -13,4 +13,6 @@ spectacular:
 	python3 project/manage.py spectacular --file schema.yml
 
 coverage:
-	coverage run -m pytest
+	cd project && coverage run -m pytest; coverage html
+pytest:
+	cd project && pytest -s ; pytest -s --cov
