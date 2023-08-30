@@ -17,7 +17,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 # DEBUG = True
 DEBUG = env("DEBUG")
 SECRET_KEY = env("SECRET_KEY")
-print("SECRET KEY: ", SECRET_KEY)
+# print("SECRET KEY: ", SECRET_KEY)
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -28,16 +28,29 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # External packages
     "rest_framework",
+    "drf_spectacular",
     # Internal Apps
-    "project.product"
+    "project.product",
 ]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    ]
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     "rest_framework_simplejwt.authentication.JWTAuthentication",
+    #     "rest_framework.authentication.SessionAuthentication",
+    # ],
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django Ecommerce API",
+    "DESCRIPTION": "A simple API for Ecommerce project",
+    "VERSION": "1.0.0",
+    # "SERVE_INCLUDE_SCHEMA": False,
 }
 
 MIDDLEWARE = [
