@@ -27,8 +27,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # External packages
-    "rest_framework"
+    "rest_framework",
     # Internal Apps
+    "project.product"
 ]
 
 REST_FRAMEWORK = {
