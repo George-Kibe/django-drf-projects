@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -25,7 +26,10 @@ SECRET_KEY = "django-insecure-#46@jq8h6m1ihgw-xfhu8bg2q1@qxyv#d_j%!gp7*bj73x#rlg
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+# CSRF_TRUSTED_ORIGINS = ["XXXXXXXXXXXXXXXXXXXXX"]
+CSRF_TRUSTED_ORIGINS = ["http://*.on-acorn.io", "https://*.on-acorn.io"]
+
 
 
 # Application definition
@@ -37,6 +41,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "api",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -79,7 +85,16 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": os.getenv("MARIADB_DATABASE"),
+#         "USER": os.getenv("MARIADB_USER"),
+#         "PASSWORD": os.getenv("MARIADB_ROOT_PASSWORD"),
+#         "HOST": os.getenv("MARIADB_HOST"),
+#         "PORT": os.getenv("MARIADB_PORT", 3306),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
