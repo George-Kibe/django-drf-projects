@@ -5,3 +5,5 @@
 
 #### Building
 ```docker build -t webserver .```
+
+### Setting up a local DNS Setup
