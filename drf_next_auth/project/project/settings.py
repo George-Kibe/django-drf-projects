@@ -139,8 +139,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
 # Gmail Authentication
-EMAIL_HOST_USER = 'buenasconsultants@gmail.com'  # Replace with your Gmail address
-EMAIL_HOST_PASSWORD = 'iyhfyyhitcridebq'  # Replace with your app-specific password
+EMAIL_HOST_USER =env("EMAIL_HOST_USER")  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD") # Replace with your app-specific password
 
 # Default "From" email address
 DEFAULT_FROM_EMAIL = 'buenasconsultants@gmail.com'  # Optional: Set a default "from" address
