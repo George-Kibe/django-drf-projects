@@ -5,6 +5,7 @@ from django.utils import timezone
 from .managers import UserManager
 from rest_framework_simplejwt.tokens import RefreshToken
 
+AUTH_PROVIDERS = {"email": "email", "google": "google", "github": "github"}
 # Create your models here.
 class User(AbstractBaseUser, PermissionsMixin): 
     email = models.EmailField(max_length=255, verbose_name=_("Email Address"), unique=True)
@@ -16,6 +17,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     last_login = models.DateTimeField(null=True, blank=True)
+    auth_provider = models.CharField(max_length=50, choices=AUTH_PROVIDERS, default=AUTH_PROVIDERS.get("email"))
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
