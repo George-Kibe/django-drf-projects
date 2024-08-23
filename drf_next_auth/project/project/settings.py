@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     # project apps
     "accounts",
     "social_accounts",
@@ -154,4 +155,7 @@ EMAIL_HOST_USER =env("EMAIL_HOST_USER")  # Replace with your Gmail address
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD") # Replace with your app-specific password
 
 # Default "From" email address
-DEFAULT_FROM_EMAIL = 'buenasconsultants@gmail.com'  # Optional: Set a default "from" address
+DEFAULT_FROM_EMAIL = env("EMAIL_HOST_USER")  # Optional: Set a default "from" address
+
+GOOGLE_CLIENT_ID = env("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = env("GOOGLE_CLIENT_SECRET")
