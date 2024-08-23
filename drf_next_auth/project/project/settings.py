@@ -2,9 +2,8 @@
     This is a summary of project settings
 """
 from pathlib import Path
+from datetime import timedelta
 import environ
-
-
 
 env = environ.Env(
     # set casting, default value
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     #third  party apps
     "rest_framework",
     "corsheaders",
+    "rest_framework_simplejwt",
     # project apps
     "accounts",
     "social_accounts",
@@ -78,6 +78,17 @@ WSGI_APPLICATION = "project.wsgi.application"
 # User Model
 AUTH_USER_MODEL = "accounts.User"
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 

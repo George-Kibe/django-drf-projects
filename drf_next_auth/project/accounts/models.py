@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from .managers import UserManager
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your models here.
 class User(AbstractBaseUser, PermissionsMixin): 
@@ -22,9 +23,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
     @property
     def get_full_name(self):
+        """Generate full name for a user
+
+        Returns:
+            full name: a string of the user's first and last name
+        """
         return f"{self.first_name} {self.last_name}".strip()
     def tokens(self):
-        pass
+        refresh = RefreshToken.for_user(self)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+    }
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
@@ -36,6 +46,10 @@ class OneTimePassword(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     code = models.CharField(max_length=6, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _("OTP")
+        verbose_name_plural = _("OTPs")
 
     def __str__(self):
-        return f"{self.user.email}: {self.code}"
+        return f"{str(self.user.email)}: {self.code}"
