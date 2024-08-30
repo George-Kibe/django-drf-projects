@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
 import axios from "axios";
@@ -18,6 +18,39 @@ const SignUp = () => {
   const [confirm_password, setConfirm_password] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const handleGoogleResponse = async(response) => {
+    const payload = response.credential
+    try {
+      const serverResponse = await axios.post("http://localhost:8000/api/accounts/social/google/", {
+        "access_token": payload
+      });
+      console.log("Server Response: ", serverResponse);
+      toast.success("Login successful. Welcome!")
+        const userInfo = {
+          name: serverResponse.data.full_name,
+          email: serverResponse.data.email,
+        }
+        localStorage.setItem("userInfo", JSON.stringify(userInfo))
+        localStorage.setItem("access", serverResponse.data.access_token)
+        localStorage.setItem("refresh", serverResponse.data.refresh_token)
+        navigate("/profile")
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+  useEffect(() => {
+    /* Global Google */
+    google.accounts.id.initialize({
+      client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+      callback: handleGoogleResponse
+    });
+    google.accounts.id.renderButton(
+      document.getElementById("google-button"),
+      { theme: "outline", size: "large", text:"continue_with", shape:"cirlce" }
+    );
+  }, [])
+  
   
   const handleSubmit= async(e) => {
     e.preventDefault();
@@ -105,17 +138,18 @@ const SignUp = () => {
                     href="/#"
                     className="flex h-11 items-center justify-center rounded-md hover:bg-opacity-90 border-2"
                   >
-                    <BsGithub className="text-2xl" />
+                    <BsGithub className="text-2xl mr-2" /> <p>Sign In with Github</p>
                   </a>
                 </li>
-                <li className="w-full px-2">
+                {/* <li className="w-full px-2">
                   <a
                     href="/#"
                     className="flex h-11 items-center justify-center rounded-md bg-white hover:bg-opacity-90 border-2"
                   >
                     <FcGoogle className="text-2xl" />
                   </a>
-                </li>
+                </li> */}
+                <li id="google-button"></li>
               </ul>
               <a
                 href="/forgot-password"

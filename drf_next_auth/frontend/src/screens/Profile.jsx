@@ -32,7 +32,6 @@ const Profile = () => {
   
 
   const handleLogout = async() => {
-
     setLoading(true);
     try {
         const response = await axiosInstance.post("/accounts/logout/", {"refresh_token": refresh});

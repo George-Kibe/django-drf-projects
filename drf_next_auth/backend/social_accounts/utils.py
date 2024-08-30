@@ -22,16 +22,19 @@ def login_social_user(email, password):
     user_tokens = user.tokens()
     return {
         "email": user.email,
+        "full_name": user.first_name + " " + user.last_name,
         "first_name": user.first_name,
         "last_name": user.last_name,
-        "tokens": user_tokens
+        "access_token": user_tokens["access"],
+        "refresh_token": user_tokens["refresh"],
     }
 
 def register_social_user(provider, email, first_name, last_name):
     user = User.objects.filter(email=email)
     if user.exists():
         if provider == user[0].auth_provider:
-            login_social_user(email, settings.SOCIAL_AUTH_PASSWORD)
+            result = login_social_user(email, settings.SOCIAL_AUTH_PASSWORD)
+            return result
         else:
             raise AuthenticationFailed(
                 detail=f"Please continue your login process with Google{user[0].auth_provider}"
@@ -47,4 +50,5 @@ def register_social_user(provider, email, first_name, last_name):
         registered_user = User.objects.create_user(**new_user)
         registered_user.is_verified = True
         registered_user.save()
-        login_social_user(email=email, password=settings.SOCIAL_AUTH_PASSWORD)
+        result = login_social_user(email=email, password=settings.SOCIAL_AUTH_PASSWORD)
+        return result
