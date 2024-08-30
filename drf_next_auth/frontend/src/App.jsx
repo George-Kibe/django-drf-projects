@@ -7,7 +7,9 @@ import { SignUp,
   Profile,
   ForgotPassword,
   VerifyEmail,
-  LandingPage} from "./screens"
+  LandingPage,
+  ResetPassword,
+} from "./screens"
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
           <Route path='/profile' element={<Profile />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/otp/verify-email' element={<VerifyEmail />} />
+          <Route path='/password-reset-confirm/:uid/:token' element={<ResetPassword />} />
+          <Route path='*' element={<h1>404 Page not found</h1>} />
         </Routes>
       </Router>
     </>

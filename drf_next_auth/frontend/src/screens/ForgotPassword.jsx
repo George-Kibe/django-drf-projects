@@ -1,24 +1,28 @@
 /* eslint-disable react/prop-types */
 
 import { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
-import { BsGithub } from "react-icons/bs";
+import { toast } from "react-toastify"
 import InputBox from "../components/InputBox";
+import axiosInstance from "../../utils/axiosInstance";
 
 
 const ForgotPassWord = () => {
   const [email, setEmail] = useState('');
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  const handleSubmit= (e) => {
+  const handleSubmit= async(e) => {
     e.preventDefault();
-    console.log('submitted');
     setLoading(true);
-    const data = {
-      email,
-    };
-    console.log(data);
+    try {
+      const response = await axiosInstance.post("/accounts/password-reset/", {"email": email})
+      console.log(response.data);
+      if (response.status === 200) {
+        toast.success("Password reset link sent to your email")
+      }
+      setEmail("")
+    } catch (error) {
+      toast.error(error.message)
+    }
     setLoading(false);
   }
 
@@ -29,9 +33,6 @@ const ForgotPassWord = () => {
           <div className="w-full px-4">
             <div className="relative mx-auto max-w-[525px] overflow-hidden rounded-lg bg-white p text-center dark:bg-dark-2">
               <h3 className="mb-10 text-2xl font-semibold">Reset Password</h3>
-              <div className="mb-4 text-center md:mb-4">
-                {error && <p className="text-red-500">{error}</p>}
-              </div>
               <form onSubmit={handleSubmit}>
                 <InputBox type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
                 <div className="mb-10">
@@ -41,43 +42,7 @@ const ForgotPassWord = () => {
                     className="w-full cursor-pointer rounded-md border border-primary bg-primary px-5 py-3 text-base font-medium transition hover:bg-opacity-90"
                   />
                 </div>
-              </form>
-              <p className="mb-6 text-base text-secondary-color dark:text-dark-7">
-                Connect With
-              </p>
-              <ul className="-mx-2 mb-12 flex justify-between">
-                <li className="w-full px-2">
-                  <a
-                    href="/#"
-                    className="flex h-11 items-center justify-center rounded-md hover:bg-opacity-90 border-2"
-                  >
-                    <BsGithub className="text-2xl" />
-                  </a>
-                </li>
-                <li className="w-full px-2">
-                  <a
-                    href="/#"
-                    className="flex h-11 items-center justify-center rounded-md bg-white hover:bg-opacity-90 border-2"
-                  >
-                    <FcGoogle className="text-2xl" />
-                  </a>
-                </li>
-              </ul>
-              <a
-                href="/forgot-password"
-                className="mb-2 inline-block text-base text-dark hover:text-primary hover:underline text-black"
-              >
-                Forgot Password?
-              </a>
-              <p className="text-base text-body-color dark:text-dark-6">
-                <span className="pr-0.5">Not a member yet?</span>
-                <a
-                  href="/sign-up"
-                  className="hover:underline"
-                >
-                  Sign Up
-                </a>
-              </p>
+              </form>  
             </div>
           </div>
         </div>
