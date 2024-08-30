@@ -3,10 +3,14 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {toast} from "react-toastify";
 import InputBox from "../components/InputBox";
 
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
   const [email, setEmail] = useState('');
@@ -15,10 +19,16 @@ const SignUp = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  const handleSubmit= (e) => {
+  const handleSubmit= async(e) => {
     e.preventDefault();
     console.log('submitted');
     setLoading(true);
+    if (!first_name || !last_name || !email || !password || !confirm_password) {
+      setError('All fields are required');
+      console.log('All fields are required');
+      setLoading(false);
+      return;
+    }
     if (password !== confirm_password) {
       setError('Passwords do not match');
       console.log('Passwords do not match');
@@ -30,8 +40,22 @@ const SignUp = () => {
       last_name,
       email,
       password,
+      password2: confirm_password
     };
     console.log(data);
+    try {
+      const response = await axios.post('http://localhost:8000/api/accounts/register/', data)
+      console.log("Response: ", response);
+      if (response.status === 201) {
+        navigate('/otp/verify-email');
+        toast.success(response.data.message);
+      } else {
+        setError(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      setError(error.message);
+    }
     setLoading(false);
   }
 

@@ -3,27 +3,54 @@
 import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
+import {toast} from "react-toastify"
 import InputBox from "../components/InputBox";
-
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: '',
+  })
   const [loading, setLoading] = useState(false);
+  const {email, password} = loginData
   
-  const handleSubmit= (e) => {
+  const handleSubmit= async(e) => {
     e.preventDefault();
-    console.log('submitted');
+    if (!email || !password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
     setLoading(true);
-    const data = {
-      email,
-      password,
-    };
-    console.log(data);
+    try {
+      const response = await axios.post("http://localhost:8000/api/accounts/login/", loginData)
+      if(response.status === 200){
+        toast.success("Login successful. Welcome!")
+        const userInfo = {
+          name: response.data.full_name,
+          email: response.data.email,
+        }
+        localStorage.setItem("userInfo", JSON.stringify(userInfo))
+        localStorage.setItem("access", response.data.access_token)
+        localStorage.setItem("refresh", response.data.refresh_token)
+        navigate("/profile")
+      }
+      
+    } catch (error) {
+      toast.error(error.message)
+    }
+    console.log(loginData);
     setLoading(false);
   }
-
+  const handleOnChange = (e) => {
+    setLoginData({
+      ...loginData,
+      [e.target.name]: e.target.value,
+    });
+  }
+  
   return (
     <section className="bg-gray-1 dark:bg-dark">
       <div className="container mx-auto">
@@ -31,16 +58,22 @@ const Login = () => {
           <div className="w-full px-4">
             <div className="relative mx-auto max-w-[525px] overflow-hidden rounded-lg bg-white p text-center dark:bg-dark-2">
               <h3 className="mb-10 text-2xl font-semibold">Login</h3>
-              <div className="mb-4 text-center md:mb-4">
+              {/* <div className="mb-4 text-center md:mb-4">
                 {error && <p className="text-red-500">{error}</p>}
-              </div>
+              </div> */}
               <form onSubmit={handleSubmit}>
-                <InputBox type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
+                <InputBox 
+                  type="email" 
+                  name="email" 
+                  value={email} 
+                  onChange={handleOnChange} 
+                  placeholder="Email" 
+                />
                 <InputBox
                   type="password"
                   name="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={handleOnChange}
                   placeholder="Password"
                 />
                 <div className="mb-10">

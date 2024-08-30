@@ -3,11 +3,13 @@ import Login from "./Login";
 import Profile from "./Profile";
 import ForgotPassword from "./ForgotPassword";
 import VerifyEmail from "./VerifyEmail";
+import LandingPage from "./Landing";
 
 export {
     SignUp,
     Login,
     Profile,
     ForgotPassword,
-    VerifyEmail
+    VerifyEmail,
+    LandingPage
 }

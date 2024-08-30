@@ -1,13 +1,13 @@
 const Profile = () => {
   return (
-    <div>
+    <div className="p-4 md:p-8">
         <div className="flex items-center gap-x-3">
         <div className="shrink-0">
             <img className="shrink-0 size-16 rounded-full" src="https://images.unsplash.com/photo-1510706019500-d23a509eecd4?q=80&w=2667&auto=format&fit=facearea&facepad=3&w=320&h=320&q=80&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Avatar" />
         </div>
 
         <div className="grow">
-            <h1 className="text-lg font-medium text-gray-800 dark:text-neutral-200">
+            <h1 className="text-lg font-medium text-gray-800">
             Eliana Garcia
             </h1>
             <p className="text-sm text-gray-600 dark:text-neutral-400">
@@ -16,11 +16,11 @@ const Profile = () => {
         </div>
         </div>
         <div className="mt-8">
-        <p className="text-sm text-gray-600 dark:text-neutral-400">
+        <p className="text-sm text-gray-600 text-justify dark:text-neutral-400">
             I am a seasoned graphic designer with over 14 years of experience in creating visually appealing and user-centric designs. My expertise spans across UI design, design systems, and custom illustrations, helping clients bring their digital visions to life.
         </p>
 
-        <p className="mt-3 text-sm text-gray-600 dark:text-neutral-400">
+        <p className="mt-3 text-sm text-gray-600 text-justify dark:text-neutral-400">
             Currently, I work remotely for Notion, where I design template UIs, convert them into HTML and CSS, and provide comprehensive support to our users. I am passionate about crafting elegant and functional designs that enhance user experiences.
         </p>
 

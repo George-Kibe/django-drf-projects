@@ -76,6 +76,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "project.wsgi.application"
 
+# CORS Settings
+CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:4000"]
+
 # User Model
 AUTH_USER_MODEL = "accounts.User"
 
