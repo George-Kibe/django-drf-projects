@@ -1,4 +1,54 @@
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from "react"
+import {toast} from 'react-toastify'
+import axiosInstance from '../../utils/axiosInstance';
+
 const Profile = () => {
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const user = JSON.parse(localStorage.getItem('userInfo'))
+  const jwt_access = localStorage.getItem('access')
+  const refresh = localStorage.getItem('refresh') ? localStorage.getItem('refresh') : "";
+  
+  const getMyProfile = async() => {
+    setLoading(true)
+    try {
+        const response = await axiosInstance.get("/accounts/profile/")
+        console.log("Profile response: ", response.data)
+    } catch (error) {
+       toast.error(error.message) 
+    }
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    if (jwt_access === null && !user) {
+      navigate('/login')
+    } else{
+        getMyProfile()
+    }
+  }, [])
+
+  
+
+  const handleLogout = async() => {
+
+    setLoading(true);
+    try {
+        const response = await axiosInstance.post("/accounts/logout/", {"refresh_token": refresh});
+        console.log("Logout response: ", response.data);
+        if (response.status === 200) {
+            localStorage.removeItem("userInfo");
+            localStorage.removeItem("access");
+            localStorage.removeItem("refresh");
+            navigate("/");
+        }
+    } catch (error) {
+        toast.error(error.message)
+    }
+    setLoading(false);
+  }
+  
   return (
     <div className="p-4 md:p-8">
         <div className="flex items-center gap-x-3">
@@ -8,7 +58,7 @@ const Profile = () => {
 
         <div className="grow">
             <h1 className="text-lg font-medium text-gray-800">
-            Eliana Garcia
+            {user?.name}
             </h1>
             <p className="text-sm text-gray-600 dark:text-neutral-400">
             Graphic Designer, Web designer/developer
@@ -46,6 +96,14 @@ const Profile = () => {
             </a>
             </li>
         </ul>
+        </div>
+        <div className="mt-8 flex items-center gap-x-3">
+            <button onClick={handleLogout} className="inline-flex items-center justify-center rounded-md border-2 border-primary py-2 px-4 text-center text-base font-medium text-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 lg:px-6">{loading? "Loading..." : "Logout"}
+            </button>
+        </div>
+        <div className="mt-8 flex items-center gap-x-3">
+            <button onClick={getMyProfile} className="inline-flex items-center justify-center rounded-md border-2 border-primary py-2 px-4 text-center text-base font-medium text-primary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:ring-offset-2 lg:px-6">{loading? "Loading..." : "Get Profile"}
+            </button>
         </div>
     </div>
   )
