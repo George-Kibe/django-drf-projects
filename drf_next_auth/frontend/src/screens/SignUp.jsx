@@ -1,16 +1,17 @@
 /* eslint-disable react/prop-types */
 
 import { useEffect, useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { BsGithub } from "react-icons/bs";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance"
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {toast} from "react-toastify";
 import InputBox from "../components/InputBox";
 
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [first_name, setFirst_name] = useState('');
   const [last_name, setLast_name] = useState('');
   const [email, setEmail] = useState('');
@@ -92,6 +93,47 @@ const SignUp = () => {
     setLoading(false);
   }
 
+  const handleLoginWithGithub = async () => {
+    window.location.assign(
+      `https://github.com/login/oauth/authorize/?client_id=${import.meta.env.VITE_GITHUB_CLIENT_ID}
+      ` 
+    );
+  }
+
+  const sendGithubCodeToBackend = async() => {
+    if (!searchParams.get('code')) {
+      return;
+    }
+    const code = searchParams.get('code');
+    try {
+      const response = await axiosInstance.post("/accounts/social/github/", {
+        code
+      });
+      console.log("Github Server Response: ", response);
+      if (response.status === 200) {
+        toast.success("Login successful. Welcome!")
+        const userInfo = {
+          name: response.data.full_name,
+          email: response.data.email,
+        }
+        localStorage.setItem("userInfo", JSON.stringify(userInfo))
+        localStorage.setItem("access", response.data.access_token)
+        localStorage.setItem("refresh", response.data.refresh_token)
+        navigate("/profile")
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  }
+  let code = searchParams.get('code');
+  useEffect(() => {
+    if (!code) {
+      return;
+    }
+    sendGithubCodeToBackend();
+  }, [code]);
+
   return (
     <section className="bg-gray-1 dark:bg-dark">
       <div className="container mx-auto">
@@ -134,21 +176,13 @@ const SignUp = () => {
               </p>
               <ul className="-mx-2 mb-12 flex justify-between">
                 <li className="w-full px-2">
-                  <a
-                    href="/#"
+                  <button
+                    onClick={handleLoginWithGithub}
                     className="flex h-11 items-center justify-center rounded-md hover:bg-opacity-90 border-2"
                   >
                     <BsGithub className="text-2xl mr-2" /> <p>Sign In with Github</p>
-                  </a>
+                  </button>
                 </li>
-                {/* <li className="w-full px-2">
-                  <a
-                    href="/#"
-                    className="flex h-11 items-center justify-center rounded-md bg-white hover:bg-opacity-90 border-2"
-                  >
-                    <FcGoogle className="text-2xl" />
-                  </a>
-                </li> */}
                 <li id="google-button"></li>
               </ul>
               <a
