@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.utils.encoding import smart_str, DjangoUnicodeDecodeError
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_decode
-from .serializers import UserSerializer, LoginSerializer, PasswordResetSerializer, SetNewPasswordSerializer, LogoutUserSerializer
+from .serializers import UserSerializer, LoginSerializer, PasswordResetSerializer, SetNewPasswordSerializer, LogoutUserSerializer, UpdateUserSerializer
 from .utils import send_otp_email
 from .models import OneTimePassword, User
 
@@ -87,6 +87,20 @@ class ProtectedProfileView(GenericAPIView):
             "info": "You are seeing this because you are authenticated",
         }, status=status.HTTP_200_OK)
 
+class UpdateUserView(GenericAPIView):
+    serializer_class = UpdateUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+        user = request.user
+        print("User: ", user.email)
+        print("User Bio: ", user.bio)
+        serializer = self.serializer_class(
+            instance=user, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class PasswordResetView(GenericAPIView):
     serializer_class = PasswordResetSerializer

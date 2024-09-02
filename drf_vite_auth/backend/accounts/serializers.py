@@ -15,13 +15,14 @@ User = get_user_model()
 class UserSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=254)
     first_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    bio = serializers.CharField(max_length=500, required=False, allow_blank=True)
     last_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
     password = serializers.CharField(max_length=128, min_length=8, write_only=True)
     password2 = serializers.CharField(max_length=128, min_length=8, write_only=True)
     
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'password', 'password2')
+        fields = ('email', 'bio', 'first_name', 'last_name', 'password', 'password2')
      
     def validate(self, data):
         if data['password'] != data['password2']:
@@ -122,6 +123,24 @@ class SetNewPasswordSerializer(serializers.Serializer):
             raise AuthenticationFailed('Invalid user')
         except Exception as e:
             raise AuthenticationFailed('An error occurred')
+
+class UpdateUserSerializer(serializers.Serializer):
+    first_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    last_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    bio = serializers.CharField(max_length=500, required=False, allow_blank=True)
+    profile_photo = serializers.CharField(max_length=255, required=False, allow_blank=True)
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'bio', 'profile_photo')
+
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.profile_photo = validated_data.get('profile_photo', instance.profile_photo)
+        instance.bio = validated_data.get('bio', instance.bio)
+        instance.save()
+        return instance
 
 class LogoutUserSerializer(serializers.Serializer):
     refresh_token = serializers.CharField()

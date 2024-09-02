@@ -11,6 +11,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, verbose_name=_("Email Address"), unique=True)
     first_name = models.CharField(max_length=30, verbose_name=_("First Name"), blank=True)
     last_name = models.CharField(max_length=30, verbose_name=_("Last Name"), blank=True)
+    bio=models.TextField(max_length=500, verbose_name=_("Bio"), blank=True)
+    profile_photo = models.CharField(max_length=255, verbose_name=_("Profile Photo"), blank=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

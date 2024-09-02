@@ -5,10 +5,12 @@ from pathlib import Path
 from datetime import timedelta
 import environ
 
-env = environ.Env(
-    # set casting, default value
-    DEBUG=(bool, False)
-)
+# Initialize environment variables
+env = environ.Env()
+
+# Reading .env file
+environ.Env.read_env()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -90,7 +92,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=2),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
