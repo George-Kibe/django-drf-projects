@@ -1,10 +1,19 @@
-FROM node:22.11
+FROM python:3.13.0-alpine3.20
 
-COPY ./frontend /frontend
+ENV PYTHONUNBUFFERED 1
 
-RUN rm -rf /frontend/node_modules
+COPY ./requirements.txt /requirements.txt
 
-WORKDIR /frontend
-RUN npm ci
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    apk add --update --upgrade --no-cache postgresql-client && \
+    apk add --update --upgrade --no-cache --virtual .tmp \
+    build-base postgresql-dev
 
-CMD ["npm", "run", "dev"]
+RUN /py/bin/pip install -r /requirements.txt && apk del .tmp
+COPY ./backend /backend
+WORKDIR /backend
+
+ENV PATH="/py/bin:$PATH"
+
+CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
