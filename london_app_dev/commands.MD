@@ -16,3 +16,9 @@ After installing above, stop the server and build with watch again
 
 ### Running docker 
 ```docker compose up --watch --build -d```
+
+### Create a Django Application
+```docker compose run --rm backend sh -c "python manage.py startapp core"```
+
+### Create a Django Admin SuperUser
+```docker compose run --rm backend sh -c "python manage.py createsuperuser"```
