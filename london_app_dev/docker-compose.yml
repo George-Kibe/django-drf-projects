@@ -30,6 +30,7 @@ services:
       - DB_USER=user
       - DB_PASSWORD=localdevpw
       - DB_POST=5432
+      - CELERY_BROKER_URL=amqp://mquser:mqpassword2025@mq:5672//
     depends_on:
       db:
         condition: service_healthy
@@ -50,6 +51,31 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
-    
+  
+  mq:
+    image: rabbitmq:4.0.7-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=mquser
+      - RABBITMQ_DEFAULT_PASS=mqpassword2025
+
+  worker:
+    build:
+      context: .
+      # dockerfile: Dockerfile.backend
+    volumes:
+      - ./backend:/backend
+    command: >
+      sh -c "celery -A backend worker -l info"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=db
+      - DB_USER=user
+      - DB_PASSWORD=localdevpw
+      - DB_POST=5432
+      - CELERY_BROKER_URL=amqp://mquser:mqpassword2025@mq:5672//
+    depends_on:
+      - backend
+      - mq
+  
 volumes:
   db-data:
