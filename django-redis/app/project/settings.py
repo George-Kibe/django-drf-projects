@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import redis
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -37,10 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third party
     'rest_framework',
     'drf_spectacular',
+    'django_celery_beat',
+    'django_celery_results',
+    # Project based apps
     'inventory',
-    'cart'
+    'cart',
+    'movies',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -76,7 +84,7 @@ REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Session-Based Cart",
+    "TITLE": "Session Based Cart",
     "DESCRIPTION": "Redis Fast Session Storage for Web Applications.",
     "VERSION": "1.0.0",
 }
@@ -153,3 +161,11 @@ REDIS_CLIENT = redis.Redis(
     db=REDIS_DB,
     decode_responses=REDIS_DECODE_RESPONSES,
 )
+# save Celery task results in django's database
+CELERY_RESULT_BACKEND = "django-db"
+# broker_connection_retry_on_startup
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+# This configures redis as the datastore between Django + Celery
+CELERY_BROKER_URL = "redis://redis_server:6379"
+# This allows you to schedule items in the Django admin.
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

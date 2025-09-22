@@ -7,5 +7,8 @@ WORKDIR /app
 # Copy project files
 COPY requirements.txt .
 
+# Install build tools for psutil
+RUN apk add --no-cache gcc python3-dev musl-dev linux-headers
+
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
